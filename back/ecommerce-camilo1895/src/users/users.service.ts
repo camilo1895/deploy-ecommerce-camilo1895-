@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { UsersRepository } from './users.repository';
+import { User } from 'src/entities/users.entity';
 
 @Injectable()
 export class UsersService {
-  getUsers() {
-    throw new Error('Method not implemented.');
+  constructor(private readonly usersRepository: UsersRepository) {}
+  async getUsers(): Promise<User[]> {
+    return this.usersRepository.getUsers();
   }
 }
