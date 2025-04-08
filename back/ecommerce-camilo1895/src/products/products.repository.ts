@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ProductDto } from 'src/dtos/products.dto';
 import { Product } from 'src/entities/products.entity';
 
 @Injectable()
@@ -42,5 +43,37 @@ export class ProductsRepository {
 
   async getProducts(): Promise<Product[]> {
     return this.products;
+  }
+
+  getProductById(id: number) {
+    const findProduct = this.products.find((product) => product.id === id);
+
+    if (!findProduct) {
+      return 'Producto no existe';
+    }
+
+    return findProduct;
+  }
+
+  createProduct(product: ProductDto) {
+    const idProduct = this.products.length + 1;
+    const newProduct = {
+      id: idProduct,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      imgUrl: product.imgUrl,
+    };
+
+    return this.products.push(newProduct);
+  }
+
+  updateProductById() {
+    throw new Error('Method not implemented.');
+  }
+
+  deleteProductById() {
+    throw new Error('Method not implemented.');
   }
 }

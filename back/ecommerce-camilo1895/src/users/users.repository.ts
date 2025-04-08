@@ -46,4 +46,20 @@ export class UsersRepository {
   async getUsers(): Promise<User[]> {
     return this.users;
   }
+
+  getUserById() {
+    throw new Error('Method not implemented.');
+  }
+
+  createUser() {
+    throw new Error('Method not implemented.');
+  }
+
+  updateUserById() {
+    throw new Error('Method not implemented.');
+  }
+
+  deleteUserById() {
+    throw new Error('Method not implemented.');
+  }
 }
