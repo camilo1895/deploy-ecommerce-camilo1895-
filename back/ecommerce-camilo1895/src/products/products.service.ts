@@ -6,23 +6,44 @@ import { ProductDto } from 'src/dtos/products.dto';
 export class ProductsService {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  getProducts() {
-    return this.productsRepository.getProducts();
+  getProducts(page: number, limit: number) {
+    return this.productsRepository.getProducts(page, limit);
   }
 
   getProductById(id: number) {
-    return this.productsRepository.getProductById(id);
+    const findProduct = this.productsRepository.getProductById(id);
+
+    if (!findProduct) {
+      return 'Producto no existe';
+    }
+
+    return findProduct;
   }
 
   createProduct(product: ProductDto) {
     return this.productsRepository.createProduct(product);
   }
 
-  updateProductById() {
-    return this.productsRepository.updateProductById();
+  updateProductById(id: number, product: ProductDto) {
+    const index = this.productsRepository.updateProductById(id);
+
+    if (index === -1) {
+      return 'Producto no existe';
+    }
+
+    return (this.productsRepository.products[index] = {
+      ...this.productsRepository.products[index],
+      ...product,
+    });
   }
 
-  deleteProductById() {
-    return this.productsRepository.deleteProductById();
+  deleteProductById(id: number) {
+    const index = this.productsRepository.deleteProductById(id);
+
+    if (index && index === -1) {
+      return 'Producto no existe';
+    }
+
+    return this.productsRepository.products.splice(index, 1);
   }
 }

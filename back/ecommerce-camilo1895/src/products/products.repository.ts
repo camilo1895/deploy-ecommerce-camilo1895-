@@ -4,7 +4,7 @@ import { Product } from 'src/entities/products.entity';
 
 @Injectable()
 export class ProductsRepository {
-  private products: Product[] = [
+  public products: Product[] = [
     {
       id: 1,
       name: 'Laptop Gamer',
@@ -41,39 +41,28 @@ export class ProductsRepository {
     },
   ];
 
-  async getProducts(): Promise<Product[]> {
-    return this.products;
+  async getProducts(page: number, limit: number): Promise<Product[]> {
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    return this.products.slice(startIndex, endIndex);
   }
 
   getProductById(id: number) {
-    const findProduct = this.products.find((product) => product.id === id);
-
-    if (!findProduct) {
-      return 'Producto no existe';
-    }
-
-    return findProduct;
+    return this.products.find((product) => product.id === id);
   }
 
-  createProduct(product: ProductDto) {
+  async createProduct(product: ProductDto): Promise<number> {
     const idProduct = this.products.length + 1;
-    const newProduct = {
-      id: idProduct,
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      stock: product.stock,
-      imgUrl: product.imgUrl,
-    };
 
-    return this.products.push(newProduct);
+    return this.products.push({ id: idProduct, ...product });
   }
 
-  updateProductById() {
-    throw new Error('Method not implemented.');
+  updateProductById(id: number) {
+    return this.products.findIndex((product) => product.id === id);
   }
 
-  deleteProductById() {
-    throw new Error('Method not implemented.');
+  deleteProductById(id: number) {
+    return this.products.findIndex((product) => product.id === id);
   }
 }

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { CredentialDto } from 'src/dtos/signin.dto';
+import { UserDto } from 'src/dtos/users.dto';
 import { User } from 'src/entities/users.entity';
 
 @Injectable()
 export class UsersRepository {
-  private users: User[] = [
+  public users: User[] = [
     {
       id: 1,
       email: 'juan@example.com',
@@ -43,23 +45,65 @@ export class UsersRepository {
     },
   ];
 
-  async getUsers(): Promise<User[]> {
-    return this.users;
+  async getUsers(
+    page: number,
+    limit: number,
+  ): Promise<Omit<User, 'password'>[]> {
+    const listUser = this.users.map(({ password, ...rest }) => rest);
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    return listUser.slice(startIndex, endIndex);
   }
 
-  getUserById() {
-    throw new Error('Method not implemented.');
+  async getUserById(id: number): Promise<Omit<User, 'password'> | string> {
+    const user = this.users.find((user) => user.id === id);
+
+    if (!user) {
+      return 'Usuario no existe';
+    }
+    const { password, ...rest } = user;
+
+    return rest;
   }
 
-  createUser() {
-    throw new Error('Method not implemented.');
+  signin(credential: CredentialDto) {
+    const existUser = this.users.find(
+      (user) =>
+        user.email === credential.email &&
+        user.password === credential.password,
+    );
+
+    if (!existUser) {
+      return 'Los datos son incorrectos';
+    }
+
+    return 'Ingreso exitoso';
   }
 
-  updateUserById() {
-    throw new Error('Method not implemented.');
+  createUser(user: UserDto) {
+    const userId = this.users.length + 1;
+
+    const newUser = {
+      id: userId,
+      email: user.email,
+      name: user.name,
+      password: user.password,
+      address: user.address,
+      phone: user.phone,
+      country: user.country,
+      city: user.city,
+    };
+
+    return this.users.push(newUser);
   }
 
-  deleteUserById() {
-    throw new Error('Method not implemented.');
+  updateUserById(id: number) {
+    return this.users.findIndex((user) => user.id === id);
+  }
+
+  deleteUserById(id: number) {
+    return this.users.findIndex((user) => user.id === id);
   }
 }
