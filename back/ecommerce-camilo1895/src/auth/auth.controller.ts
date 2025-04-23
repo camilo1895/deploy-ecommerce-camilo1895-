@@ -12,7 +12,7 @@ export class AuthController {
   }
 
   @Post('signin')
-  signin(@Body() credential: CredentialDto) {
-    return this.authService.signin(credential);
+  async signin(@Body() credential: CredentialDto) {
+    return await this.authService.signin(credential);
   }
 }

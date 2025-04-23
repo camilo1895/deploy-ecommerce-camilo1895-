@@ -24,31 +24,31 @@ export class UsersController {
     @Query('page') page: number = 1,
     @Query('limite') limit: number = 5,
   ): Promise<Omit<User, 'password'>[]> {
-    return this.usersService.getUsers(page, limit);
+    return await this.usersService.getUsers(page, limit);
   }
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  getUserById(
+  async getUserById(
     @Param('id') id: string,
   ): Promise<Omit<User, 'password'> | string> {
-    return this.usersService.getUserById(Number(id));
+    return await this.usersService.getUserById(id);
   }
 
   @Post()
-  createUser(@Body() user: UserDto) {
-    return this.usersService.createUser(user);
+  async createUser(@Body() user: UserDto) {
+    return await this.usersService.createUser(user);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  updateUserById(@Param('id') id: string, @Body() user: UserDto) {
-    return this.usersService.updateUserById(Number(id), user);
+  async updateUserById(@Param('id') id: string, @Body() user: UserDto) {
+    return await this.usersService.updateUserById(id, user);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  deleteUserById(@Param('id') id: string) {
-    return this.usersService.deleteUserById(Number(id));
+  async deleteUserById(@Param('id') id: string) {
+    return await this.usersService.deleteUserById(id);
   }
 }

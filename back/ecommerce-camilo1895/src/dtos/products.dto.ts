@@ -3,7 +3,7 @@ export class ProductDto {
     public name: string,
     public description: string,
     public price: number,
-    public stock: boolean,
-    public imgUrl: string,
+    public stock: number,
+    public imgUrl?: string,
   ) {}
 }

@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CredentialDto } from 'src/dtos/signin.dto';
 import { UserDto } from 'src/dtos/users.dto';
 import { User } from 'src/entities/users.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersRepository {
-  public users: User[] = [
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
+  /*  public users: User[] = [
     {
       id: 1,
       email: 'juan@example.com',
@@ -43,67 +48,65 @@ export class UsersRepository {
       phone: '+57 3223456789',
       country: 'Colombia',
     },
-  ];
+  ]; */
 
-  async getUsers(
-    page: number,
-    limit: number,
-  ): Promise<Omit<User, 'password'>[]> {
-    const listUser = this.users.map(({ password, ...rest }) => rest);
-
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-
-    return listUser.slice(startIndex, endIndex);
+  async getUsers(page: number, limit: number): Promise<User[]> {
+    return await this.userRepository.find({
+      select: [
+        'id',
+        'name',
+        'email',
+        'phone',
+        'country',
+        'address',
+        'city',
+        'orders',
+      ],
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: {
+        orders: true,
+      },
+    });
   }
 
-  async getUserById(id: number): Promise<Omit<User, 'password'> | string> {
-    const user = this.users.find((user) => user.id === id);
-
-    if (!user) {
-      return 'Usuario no existe';
-    }
-    const { password, ...rest } = user;
-
-    return rest;
+  async getUserById(id: string): Promise<User | null> {
+    return await this.userRepository.findOne({
+      select: [
+        'id',
+        'name',
+        'email',
+        'phone',
+        'country',
+        'address',
+        'city',
+        'orders',
+      ],
+      where: { id },
+      relations: {
+        orders: true,
+      },
+    });
   }
 
-  signin(credential: CredentialDto) {
-    const existUser = this.users.find(
-      (user) =>
-        user.email === credential.email &&
-        user.password === credential.password,
-    );
-
-    if (!existUser) {
-      return 'Los datos son incorrectos';
-    }
-
-    return 'Ingreso exitoso';
+  async signin(credential: CredentialDto): Promise<User | null> {
+    return await this.userRepository.findOne({
+      where: { email: credential.email, password: credential.password },
+    });
   }
 
-  createUser(user: UserDto) {
-    const userId = this.users.length + 1;
+  async createUser(user: UserDto): Promise<User> {
+    const saveUser = this.userRepository.create(user);
 
-    const newUser = {
-      id: userId,
-      email: user.email,
-      name: user.name,
-      password: user.password,
-      address: user.address,
-      phone: user.phone,
-      country: user.country,
-      city: user.city,
-    };
-
-    return this.users.push(newUser);
+    return this.userRepository.save(saveUser);
   }
 
-  updateUserById(id: number) {
-    return this.users.findIndex((user) => user.id === id);
+  async updateUserById(id: string, user: UserDto): Promise<User | null> {
+    await this.userRepository.update(id, user);
+    return await this.userRepository.findOne({ where: { id } });
   }
 
-  deleteUserById(id: number) {
-    return this.users.findIndex((user) => user.id === id);
+  async deleteUserById(id: string) {
+    return await this.userRepository.delete(id);
   }
 }

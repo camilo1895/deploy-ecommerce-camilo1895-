@@ -1,68 +1,54 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { ProductDto } from 'src/dtos/products.dto';
 import { Product } from 'src/entities/products.entity';
+import { MoreThan, Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsRepository {
-  public products: Product[] = [
-    {
-      id: 1,
-      name: 'Laptop Gamer',
-      description:
-        'Laptop potente con procesador i7 y tarjeta gráfica RTX 3060.',
-      price: 4500000,
-      stock: true,
-      imgUrl: 'https://example.com/laptop.jpg',
-    },
-    {
-      id: 2,
-      name: 'Celular Samsung S23',
-      description: 'Smartphone con pantalla AMOLED y cámara de 108MP.',
-      price: 3500000,
-      stock: true,
-      imgUrl: 'https://example.com/samsung-s23.jpg',
-    },
-    {
-      id: 3,
-      name: 'Audífonos Bluetooth',
-      description: 'Audífonos inalámbricos con cancelación de ruido.',
-      price: 250000,
-      stock: false,
-      imgUrl: 'https://example.com/audifonos.jpg',
-    },
-    {
-      id: 4,
-      name: 'Teclado Mecánico RGB',
-      description:
-        'Teclado mecánico con switches rojos y retroiluminación RGB.',
-      price: 300000,
-      stock: true,
-      imgUrl: 'https://example.com/teclado.jpg',
-    },
-  ];
+  constructor(
+    @InjectRepository(Product) private productRepository: Repository<Product>,
+  ) {}
 
   async getProducts(page: number, limit: number): Promise<Product[]> {
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-
-    return this.products.slice(startIndex, endIndex);
+    return await this.productRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: {
+        category: true,
+        orderDetails: true,
+      },
+    });
   }
 
-  getProductById(id: number) {
-    return this.products.find((product) => product.id === id);
+  async getProductById(id: string): Promise<Product | null> {
+    return await this.productRepository.findOne({
+      where: { id, stock: MoreThan(0) },
+    });
   }
 
-  async createProduct(product: ProductDto): Promise<number> {
-    const idProduct = this.products.length + 1;
-
-    return this.products.push({ id: idProduct, ...product });
+  async precargaProducts(newProduct: ProductDto): Promise<Product> {
+    return await this.productRepository.save(newProduct);
   }
 
-  updateProductById(id: number) {
-    return this.products.findIndex((product) => product.id === id);
+  async createProduct(product: ProductDto): Promise<Product> {
+    const newProduct = this.productRepository.create(product);
+
+    return await this.productRepository.save(newProduct);
   }
 
-  deleteProductById(id: number) {
-    return this.products.findIndex((product) => product.id === id);
+  async updateProductById(
+    id: string,
+    product: ProductDto,
+  ): Promise<Product | null> {
+    await this.productRepository.update(id, { stock: product.stock });
+
+    return await this.productRepository.findOne({
+      where: { id },
+    });
+  }
+
+  async deleteProductById(id: string) {
+    return await this.productRepository.delete(id);
   }
 }

@@ -6,5 +6,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(LoggerGlobal);
   await app.listen(process.env.PORT ?? 3000);
+  console.log('Servidor iniciado en el puerto 3000');
 }
 bootstrap();

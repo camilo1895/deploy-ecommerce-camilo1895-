@@ -14,34 +14,38 @@ export class UsersService {
     return this.usersRepository.getUsers(page, limit);
   }
 
-  async getUserById(id: number): Promise<Omit<User, 'password'> | string> {
-    return this.usersRepository.getUserById(id);
+  async getUserById(id: string): Promise<Omit<User, 'password'> | string> {
+    const user = await this.usersRepository.getUserById(id);
+
+    if (!user) {
+      return 'Usuario no existe';
+    }
+    const { password, ...rest } = user;
+
+    return rest;
   }
 
-  createUser(user: UserDto) {
+  async createUser(user: UserDto): Promise<User> {
     return this.usersRepository.createUser(user);
   }
 
-  updateUserById(id: number, user: UserDto) {
-    const index = this.usersRepository.updateUserById(id);
+  async updateUserById(id: string, user: UserDto) {
+    const validateUser = await this.usersRepository.getUserById(id);
 
-    if (index === -1) {
+    if (!validateUser) {
       return 'Usuario no existe';
     }
 
-    return (this.usersRepository.users[index] = {
-      ...this.usersRepository.users[index],
-      ...user,
-    });
+    return await this.usersRepository.updateUserById(id, user);
   }
 
-  deleteUserById(id: number) {
-    const index = this.usersRepository.deleteUserById(id);
+  async deleteUserById(id: string) {
+    const validateUser = await this.usersRepository.getUserById(id);
 
-    if (index === -1) {
+    if (!validateUser) {
       return 'Usuario no existe';
     }
 
-    return this.usersRepository.users.splice(index, 1);
+    return await this.usersRepository.deleteUserById(id);
   }
 }

@@ -9,7 +9,13 @@ export class AuthService {
     throw new Error('Method not implemented.');
   }
 
-  signin(credential: CredentialDto) {
-    return this.usersRepository.signin(credential);
+  async signin(credential: CredentialDto): Promise<string> {
+    const validateCredential = await this.usersRepository.signin(credential);
+
+    if (!validateCredential) {
+      return 'Los datos son incorrectos';
+    }
+
+    return 'Ingreso exitoso';
   }
 }

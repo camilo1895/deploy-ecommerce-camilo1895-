@@ -13,8 +13,8 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductDto } from 'src/dtos/products.dto';
-import { Product } from 'src/entities/products.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Product } from 'src/entities/products.entity';
 
 @Controller('products')
 export class ProductsController {
@@ -22,37 +22,47 @@ export class ProductsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getProducts(
+  async getProducts(
     @Query('page') page: number = 1,
     @Query('limite') limit: number = 5,
-  ) {
-    return this.productsService.getProducts(page, limit);
+  ): Promise<Product[]> {
+    return await this.productsService.getProducts(page, limit);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getProductById(@Param('id') id: string) {
-    return this.productsService.getProductById(Number(id));
+  async getProductById(
+    @Param('id') id: string,
+  ): Promise<Product | null | string> {
+    return await this.productsService.getProductById(id);
+  }
+
+  @Post('seeder')
+  async precargaProducts() {
+    return await this.productsService.precargaProducts();
   }
 
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  createProduct(@Body() product: ProductDto) {
-    return this.productsService.createProduct(product);
+  async createProduct(@Body() product: ProductDto) {
+    return await this.productsService.createProduct(product);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  updateProductById(@Param('id') id: string, @Body() product: ProductDto) {
-    return this.productsService.updateProductById(Number(id), product);
+  async updateProductById(
+    @Param('id') id: string,
+    @Body() product: ProductDto,
+  ): Promise<Product | string | null> {
+    return await this.productsService.updateProductById(id, product);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  deleteProductById(@Param('id') id: string) {
-    return this.productsService.deleteProductById(Number(id));
+  async deleteProductById(@Param('id') id: string) {
+    return await this.productsService.deleteProductById(id);
   }
 }
