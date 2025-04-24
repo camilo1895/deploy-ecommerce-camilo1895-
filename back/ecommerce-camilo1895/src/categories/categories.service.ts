@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoriesRepository } from './categories.repository';
 import data from '../../data.json';
 
@@ -6,8 +6,15 @@ import data from '../../data.json';
 export class CategoriesService {
   constructor(private readonly categoriesRepository: CategoriesRepository) {}
 
-  getCategories(id: string) {
-    return this.categoriesRepository.getCategories(id);
+  async getCategories(id: string) {
+    const validateCategories =
+      await this.categoriesRepository.getCategories(id);
+
+    if (!validateCategories) {
+      throw new NotFoundException('Los datos ingresados son incorrectos');
+    }
+
+    return validateCategories;
   }
 
   async addCategories() {

@@ -18,7 +18,7 @@ export class User {
   password: string;
 
   @Column({ type: 'int' })
-  phone: string;
+  phone: number;
 
   @Column({ type: 'varchar', length: 50 })
   country?: string | undefined;

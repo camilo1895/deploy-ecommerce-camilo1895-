@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -32,13 +33,13 @@ export class ProductsController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getProductById(
-    @Param('id') id: string,
-  ): Promise<Product | null | string> {
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Product | null> {
     return await this.productsService.getProductById(id);
   }
 
   @Post('seeder')
-  async precargaProducts() {
+  async precargaProducts(): Promise<Product[]> {
     return await this.productsService.precargaProducts();
   }
 
@@ -53,16 +54,16 @@ export class ProductsController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async updateProductById(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() product: ProductDto,
-  ): Promise<Product | string | null> {
+  ): Promise<Product | null> {
     return await this.productsService.updateProductById(id, product);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  async deleteProductById(@Param('id') id: string) {
+  async deleteProductById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.productsService.deleteProductById(id);
   }
 }

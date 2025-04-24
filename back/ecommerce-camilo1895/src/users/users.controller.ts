@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -11,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from 'src/entities/users.entity';
-import { UserDto } from 'src/dtos/users.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { CreateUserDto } from 'src/dtos/createUser.dto';
 
 @Controller('users')
 export class UsersController {
@@ -30,25 +31,28 @@ export class UsersController {
   @Get(':id')
   @UseGuards(AuthGuard)
   async getUserById(
-    @Param('id') id: string,
-  ): Promise<Omit<User, 'password'> | string> {
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Omit<User, 'password'>> {
     return await this.usersService.getUserById(id);
   }
 
   @Post()
-  async createUser(@Body() user: UserDto) {
+  async createUser(@Body() user: CreateUserDto) {
     return await this.usersService.createUser(user);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  async updateUserById(@Param('id') id: string, @Body() user: UserDto) {
+  async updateUserById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() user: CreateUserDto,
+  ) {
     return await this.usersService.updateUserById(id, user);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  async deleteUserById(@Param('id') id: string) {
+  async deleteUserById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.usersService.deleteUserById(id);
   }
 }

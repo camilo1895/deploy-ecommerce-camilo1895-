@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { OrdersRepository } from './orders.repository';
-import { CreateOrderDto } from 'src/dtos/createOrderDto.dto';
+import { CreateOrderDto } from 'src/dtos/createOrder.dto';
 import { UsersRepository } from 'src/users/users.repository';
 import { ProductsRepository } from 'src/products/products.repository';
 import { OrderDetails } from 'src/entities/orderDetails.entity';
@@ -22,12 +22,12 @@ export class OrdersService {
     return await this.ordersRepository.getOrder(id);
   }
 
-  async addOrder(order: CreateOrderDto): Promise<Order | string | null> {
+  async addOrder(order: CreateOrderDto): Promise<Order | null> {
     //Buscar al usuario por su id
     const validateUser = await this.usersRepository.getUserById(order.userId);
 
     if (!validateUser) {
-      return 'Usuario no existe';
+      throw new NotFoundException('Usuario no existe');
     }
 
     let totalPrice: number = 0;
@@ -40,13 +40,19 @@ export class OrdersService {
     // Buscar productos por sus id y validar stock
     const validateProduct = await Promise.all(
       order.products.map(async (product) => {
+        if (!product.id) {
+          throw new NotFoundException('El ID del producto es requerido');
+        }
+
         // Valida si existe producto
         const existsProduct = await this.productRepository.getProductById(
           product.id,
         );
 
         if (!existsProduct) {
-          return `Producto con ID ${product.id} no existe`;
+          throw new NotFoundException(
+            `Producto con ID ${product.id} no existe`,
+          );
         }
 
         //Acumulas el total sumando los precios de los productos.

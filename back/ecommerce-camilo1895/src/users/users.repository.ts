@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CredentialDto } from 'src/dtos/signin.dto';
-import { UserDto } from 'src/dtos/users.dto';
+import { CreateUserDto } from 'src/dtos/createUser.dto';
+import { LoginUserDto } from 'src/dtos/loginUse.dto';
 import { User } from 'src/entities/users.entity';
 import { Repository } from 'typeorm';
 
@@ -10,8 +10,7 @@ export class UsersRepository {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-  /*  public users: User[] = [
-    {
+  /*
       id: 1,
       email: 'juan@example.com',
       name: 'Juan Pérez',
@@ -21,34 +20,7 @@ export class UsersRepository {
       country: 'Colombia',
       city: 'Bogotá',
     },
-    {
-      id: 2,
-      email: 'maria@example.com',
-      name: 'María Gómez',
-      password: 'mariaPass456',
-      address: 'Av. Principal 456, Medellín',
-      phone: '+57 3012345678',
-      country: 'Colombia',
-      city: 'Medellín',
-    },
-    {
-      id: 3,
-      email: 'carlos@example.com',
-      name: 'Carlos López',
-      password: 'carlosSecure789',
-      address: 'Carrera 7, Cali',
-      phone: '+57 3123456789',
-    },
-    {
-      id: 4,
-      email: 'ana@example.com',
-      name: 'Ana Ramírez',
-      password: 'anaPass999',
-      address: 'Calle 8, Barranquilla',
-      phone: '+57 3223456789',
-      country: 'Colombia',
-    },
-  ]; */
+     */
 
   async getUsers(page: number, limit: number): Promise<User[]> {
     return await this.userRepository.find({
@@ -89,19 +61,19 @@ export class UsersRepository {
     });
   }
 
-  async signin(credential: CredentialDto): Promise<User | null> {
+  async signin(credential: LoginUserDto): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { email: credential.email, password: credential.password },
     });
   }
 
-  async createUser(user: UserDto): Promise<User> {
+  async createUser(user: CreateUserDto): Promise<User> {
     const saveUser = this.userRepository.create(user);
 
     return this.userRepository.save(saveUser);
   }
 
-  async updateUserById(id: string, user: UserDto): Promise<User | null> {
+  async updateUserById(id: string, user: CreateUserDto): Promise<User | null> {
     await this.userRepository.update(id, user);
     return await this.userRepository.findOne({ where: { id } });
   }
