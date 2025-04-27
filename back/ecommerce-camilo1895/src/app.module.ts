@@ -6,6 +6,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 import typeOrmConfig from './config/typeorm';
 
 @Module({
@@ -27,6 +28,7 @@ import typeOrmConfig from './config/typeorm';
     AuthModule,
     CategoriesModule,
     OrdersModule,
+    FileUploadModule,
   ],
   controllers: [],
   providers: [],

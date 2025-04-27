@@ -48,6 +48,17 @@ export class ProductsRepository {
     });
   }
 
+  async updateProductImage(
+    id: string,
+    urlImage: string,
+  ): Promise<Product | null> {
+    await this.productRepository.update(id, { imgUrl: urlImage });
+
+    return await this.productRepository.findOne({
+      where: { id },
+    });
+  }
+
   async deleteProductById(id: string) {
     return await this.productRepository.delete(id);
   }
