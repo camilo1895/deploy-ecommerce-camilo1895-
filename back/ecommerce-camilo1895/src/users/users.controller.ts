@@ -5,15 +5,15 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
-  Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from 'src/entities/users.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { CreateUserDto } from 'src/dtos/createUser.dto';
+import { User } from '../entities/users.entity';
+import { AuthGuard } from '../auth/auth.guard';
+import { CreateUserDto } from '../dtos/createUser.dto';
 
 @Controller('users')
 export class UsersController {
@@ -24,7 +24,9 @@ export class UsersController {
   async getUsers(
     @Query('page') page: number = 1,
     @Query('limite') limit: number = 5,
+    @Req() request: Request & { user: any },
   ): Promise<Omit<User, 'password'>[]> {
+    console.log(request.user);
     return await this.usersService.getUsers(page, limit);
   }
 
@@ -36,10 +38,10 @@ export class UsersController {
     return await this.usersService.getUserById(id);
   }
 
-  @Post()
+  /*  @Post()
   async createUser(@Body() user: CreateUserDto) {
     return await this.usersService.createUser(user);
-  }
+  } */
 
   @Put(':id')
   @UseGuards(AuthGuard)

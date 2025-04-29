@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { User } from 'src/entities/users.entity';
-import { CreateUserDto } from 'src/dtos/createUser.dto';
+import { User } from '../entities/users.entity';
+import { CreateUserDto } from '../dtos/createUser.dto';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -25,8 +26,26 @@ export class UsersService {
     return rest;
   }
 
-  async createUser(user: CreateUserDto): Promise<User> {
-    return this.usersRepository.createUser(user);
+  async signup(user: CreateUserDto): Promise<User> {
+    if (user.password !== user.validatePassword) {
+      throw new NotFoundException('Password no coincide');
+    }
+
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+
+    if (!hashedPassword) {
+      throw new NotFoundException('Password could not be hashed');
+    }
+
+    user.password = hashedPassword;
+
+    const saveUser = await this.usersRepository.signup(user);
+
+    if (!saveUser) {
+      throw new NotFoundException('Usuario no se creo correctamente');
+    }
+
+    return saveUser;
   }
 
   async updateUserById(id: string, user: CreateUserDto) {

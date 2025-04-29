@@ -8,6 +8,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import typeOrmConfig from './config/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -22,6 +23,13 @@ import typeOrmConfig from './config/typeorm';
         if (!dbConfig) throw new Error('Database configuration is missing');
         return dbConfig;
       },
+    }),
+    JwtModule.register({
+      global: true,
+      signOptions: {
+        expiresIn: '1h',
+      },
+      secret: process.env.JWT_SECRET,
     }),
     ProductsModule,
     UsersModule,

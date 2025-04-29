@@ -13,9 +13,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ProductDto } from 'src/dtos/products.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { Product } from 'src/entities/products.entity';
+import { ProductDto } from '../dtos/products.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { Product } from '../entities/products.entity';
 
 @Controller('products')
 export class ProductsController {

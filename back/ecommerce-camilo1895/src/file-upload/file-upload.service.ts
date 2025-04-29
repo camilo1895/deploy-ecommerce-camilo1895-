@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UploadApiResponse, v2 } from 'cloudinary';
-import { Product } from 'src/entities/products.entity';
-import { ProductsRepository } from 'src/products/products.repository';
+import { Product } from '../entities/products.entity';
+import { ProductsRepository } from '../products/products.repository';
 import { Readable } from 'stream'; // Método recomendado
 
 @Injectable()
