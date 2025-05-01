@@ -5,20 +5,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { JwtPayloadDto } from '../dtos/jwtPayload.dto';
+import { JwtPayloadDto } from 'src/dtos/jwtPayload.dto';
+import { Role } from './roles.enum';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
 
-  user: JwtPayloadDto;
-
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const request: Request = context.switchToHttp().getRequest<Request>();
+    const request = context.switchToHttp().getRequest();
+
     const token = request.headers['authorization']?.split(' ')[1] ?? '';
 
     if (!token) {
@@ -28,14 +27,20 @@ export class AuthGuard implements CanActivate {
     try {
       const secret = process.env.JWT_SECRET;
 
-      this.jwtService.verify(token, { secret });
-      /*      payload.roles = ['ADMIN'];
-      payload.iat = new Date(payload.iat * 1000).toLocaleString();
-      payload.exp = new Date(payload.exp * 1000).toLocaleString(); */
+      const payload = this.jwtService.verify<JwtPayloadDto>(token, { secret });
+
+      payload.roles = [Role.User];
+
+      payload.iat = new Date(Number(payload.iat) * 1000).toLocaleString();
+      payload.exp = new Date(Number(payload.exp) * 1000).toLocaleString();
+
+      request.user = payload;
+
+      console.log(payload);
 
       return true;
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Invalid token', error);
     }
   }
 }

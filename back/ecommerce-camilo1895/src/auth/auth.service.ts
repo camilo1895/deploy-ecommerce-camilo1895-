@@ -14,7 +14,9 @@ export class AuthService {
     throw new NotFoundException('Method not implemented.');
   }
 
-  async signin(credential: LoginUserDto): Promise<string> {
+  async signin(
+    credential: LoginUserDto,
+  ): Promise<{ success: string; token: string }> {
     const validateCredential = await this.usersRepository.signin(credential);
 
     if (!validateCredential) {
@@ -38,6 +40,9 @@ export class AuthService {
 
     const token = this.jwtService.sign(userPayLoad);
 
-    return `User logged in successfully ${token}`;
+    return {
+      success: 'User logged in successfully',
+      token: token,
+    };
   }
 }

@@ -1,7 +1,9 @@
+import { Role } from 'src/auth/roles.enum';
+
 export class JwtPayloadDto {
   sub: string;
   email: string;
-  roles?: ['Admin'];
-  iat: number;
-  exp: number;
+  roles?: [Role];
+  iat: string;
+  exp: string;
 }

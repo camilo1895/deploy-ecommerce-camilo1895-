@@ -14,13 +14,17 @@ import { UsersService } from './users.service';
 import { User } from '../entities/users.entity';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreateUserDto } from '../dtos/createUser.dto';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { Role } from '../auth/roles.enum';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
+  @Roles(Role.User)
+  @UseGuards(AuthGuard, RolesGuard)
   async getUsers(
     @Query('page') page: number = 1,
     @Query('limite') limit: number = 5,

@@ -29,6 +29,9 @@ export class User {
   @Column({ type: 'varchar', length: 50 })
   city?: string | undefined;
 
+  @Column({ default: 'User' })
+  isAdmin: string;
+
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
 }
