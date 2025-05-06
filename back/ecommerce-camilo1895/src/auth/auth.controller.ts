@@ -11,11 +11,6 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Get()
-  getAuth() {
-    return this.authService.getAuth();
-  }
-
   @Post('signup')
   async signup(@Body() user: CreateUserDto) {
     return await this.usersService.signup(user);

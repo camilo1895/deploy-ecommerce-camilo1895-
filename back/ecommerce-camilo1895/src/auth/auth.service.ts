@@ -36,7 +36,10 @@ export class AuthService {
       sub: validateCredential.id,
       id: validateCredential.id,
       email: validateCredential.email,
+      isAdmin: [validateCredential.isAdmin === 'user' ? 'user' : 'admin'],
     };
+
+    console.log(userPayLoad);
 
     const token = this.jwtService.sign(userPayLoad);
 

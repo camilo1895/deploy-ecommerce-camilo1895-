@@ -16,6 +16,9 @@ import { ProductsService } from './products.service';
 import { ProductDto } from '../dtos/products.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { Product } from '../entities/products.entity';
+import { Roles } from '../decorators/roles.decorator';
+import { RolesGuard } from '../guards/roles.guard';
+import { Role } from 'src/auth/roles.enum';
 
 @Controller('products')
 export class ProductsController {
@@ -51,6 +54,8 @@ export class ProductsController {
   }
 
   @Put(':id')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async updateProductById(

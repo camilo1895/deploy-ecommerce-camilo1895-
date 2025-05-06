@@ -24,10 +24,16 @@ export class CategoriesService {
         products.findIndex((product) => product.category === item.category),
     );
 
-    await Promise.all(
+    const estadoPrecarga = await Promise.all(
       unicos.map(async (category) => {
         return this.categoriesRepository.addCategories(category.category);
       }),
     );
+
+    if (!estadoPrecarga) {
+      throw new NotFoundException('Precarga no exitosa');
+    }
+
+    return estadoPrecarga;
   }
 }

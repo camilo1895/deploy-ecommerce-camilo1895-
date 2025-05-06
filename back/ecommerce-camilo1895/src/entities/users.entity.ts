@@ -29,7 +29,7 @@ export class User {
   @Column({ type: 'varchar', length: 50 })
   city?: string | undefined;
 
-  @Column({ default: 'User' })
+  @Column({ default: 'user' })
   isAdmin: string;
 
   @OneToMany(() => Order, (order) => order.user)

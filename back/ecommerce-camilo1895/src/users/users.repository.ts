@@ -10,30 +10,20 @@ export class UsersRepository {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-  /*
-      id: 1,
-      email: 'juan@example.com',
-      name: 'Juan Pérez',
-      password: 'securePass123',
-      address: 'Calle 123, Bogotá',
-      phone: '+57 3001234567',
-      country: 'Colombia',
-      city: 'Bogotá',
-    },
-     */
 
   async getUsers(page: number, limit: number): Promise<User[]> {
     return await this.userRepository.find({
-      select: [
-        'id',
-        'name',
-        'email',
-        'phone',
-        'country',
-        'address',
-        'city',
-        'orders',
-      ],
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        country: true,
+        address: true,
+        city: true,
+        isAdmin: true,
+        orders: true,
+      },
       skip: (page - 1) * limit,
       take: limit,
       relations: {
@@ -44,16 +34,16 @@ export class UsersRepository {
 
   async getUserById(id: string): Promise<User | null> {
     return await this.userRepository.findOne({
-      select: [
-        'id',
-        'name',
-        'email',
-        'phone',
-        'country',
-        'address',
-        'city',
-        'orders',
-      ],
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        country: true,
+        address: true,
+        city: true,
+        orders: true,
+      },
       where: { id },
       relations: {
         orders: true,
@@ -76,16 +66,16 @@ export class UsersRepository {
 
     return await this.userRepository.findOne({
       where: { email: user.email },
-      select: [
-        'id',
-        'name',
-        'email',
-        'phone',
-        'country',
-        'address',
-        'city',
-        'orders',
-      ],
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        country: true,
+        address: true,
+        city: true,
+        orders: true,
+      },
     });
   }
 
