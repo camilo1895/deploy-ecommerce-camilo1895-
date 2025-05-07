@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../dtos/createUser.dto';
 import { LoginUserDto } from 'src/dtos/loginUser.dto';
 import { User } from 'src/entities/users.entity';
+import { NotFoundException } from '@nestjs/common';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -22,10 +23,11 @@ describe('AuthController', () => {
     city: 'Medellín',
   };
   const mockCredential = {
-    success: 'User logged in successfully',
-    token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYTY2YzRlMy1hMDY2LTQzMzYtYWU5Zi00MTE2OWRhNDNkMGYiLCJpZCI6ImNhNjZjNGUzLWEwNjYtNDMzNi1hZTlmLTQxMTY5ZGE0M2QwZiIsImVtYWlsIjoianVhbi5wZXJlekBleGFtcGxlLmNvbSIsImlzQWRtaW4iOiJhZG1pbiIsImlhdCI6MTc0NjIzMzcyMiwiZXhwIjoxNzQ2MjM3MzIyfQ.d_HJ1m3a1F6HS9qdvNdMFQqtcLKj2jPKST7vZEyYQJc',
+    email: 'juan.perez@example.com',
+    password: 'Abc123!@#',
   };
+
+  const error = new NotFoundException('Los datos son incorrectos');
 
   beforeEach(async () => {
     mockUserService = {
@@ -43,7 +45,11 @@ describe('AuthController', () => {
 
     mockAuthService = {
       signin: (credential: LoginUserDto) =>
-        Promise.resolve({ ...mockCredential }),
+        Promise.resolve({
+          success: 'User logged in successfully',
+          token:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYTY2YzRlMy1hMDY2LTQzMzYtYWU5Zi00MTE2OWRhNDNkMGYiLCJpZCI6ImNhNjZjNGUzLWEwNjYtNDMzNi1hZTlmLTQxMTY5ZGE0M2QwZiIsImVtYWlsIjoianVhbi5wZXJlekBleGFtcGxlLmNvbSIsImlzQWRtaW4iOiJhZG1pbiIsImlhdCI6MTc0NjIzMzcyMiwiZXhwIjoxNzQ2MjM3MzIyfQ.d_HJ1m3a1F6HS9qdvNdMFQqtcLKj2jPKST7vZEyYQJc',
+        }),
     };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
@@ -60,7 +66,7 @@ describe('AuthController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('signup() create user', async () => {
+  it('signup() Should create a new user', async () => {
     const createUser = await controller.signup(mockPeticionUser);
 
     expect(createUser).toEqual({
@@ -72,5 +78,23 @@ describe('AuthController', () => {
       address: 'Calle Falsa 123',
       city: 'Medellín',
     });
+  });
+
+  it('signin() Should token if login is successful', async () => {
+    const validateCredential = await controller.signin(mockCredential);
+
+    expect(validateCredential).toEqual({
+      success: 'User logged in successfully',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYTY2YzRlMy1hMDY2LTQzMzYtYWU5Zi00MTE2OWRhNDNkMGYiLCJpZCI6ImNhNjZjNGUzLWEwNjYtNDMzNi1hZTlmLTQxMTY5ZGE0M2QwZiIsImVtYWlsIjoianVhbi5wZXJlekBleGFtcGxlLmNvbSIsImlzQWRtaW4iOiJhZG1pbiIsImlhdCI6MTc0NjIzMzcyMiwiZXhwIjoxNzQ2MjM3MzIyfQ.d_HJ1m3a1F6HS9qdvNdMFQqtcLKj2jPKST7vZEyYQJc',
+    });
+  });
+
+  it('signin() Should throw error if login fails', async () => {
+    mockAuthService.signin = jest.fn().mockRejectedValue(error);
+
+    await expect(controller.signin(mockCredential)).rejects.toThrow(
+      'Los datos son incorrectos',
+    );
   });
 });
