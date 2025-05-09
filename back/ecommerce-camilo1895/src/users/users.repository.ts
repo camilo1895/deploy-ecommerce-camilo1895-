@@ -51,13 +51,19 @@ export class UsersRepository {
     });
   }
 
+  async emailExists(email: string): Promise<boolean> {
+    return this.userRepository.exists({ where: { email } });
+  }
+
   async signin(credential: LoginUserDto): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { email: credential.email },
     });
   }
 
-  async signup(user: CreateUserDto): Promise<User | null> {
+  async signup(
+    user: CreateUserDto,
+  ): Promise<Omit<User, 'password' | 'isAdmin'> | null> {
     const { validatePassword, ...userData } = user;
 
     const saveUser = this.userRepository.create(userData);

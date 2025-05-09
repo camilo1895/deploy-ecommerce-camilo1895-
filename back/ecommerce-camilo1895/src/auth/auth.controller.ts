@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginUserDto } from '../dtos/loginUser.dto';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../dtos/createUser.dto';
+import { User } from 'src/entities/users.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +13,9 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  async signup(@Body() user: CreateUserDto) {
+  async signup(
+    @Body() user: CreateUserDto,
+  ): Promise<Omit<User, 'password' | 'isAdmin'>> {
     return await this.usersService.signup(user);
   }
 

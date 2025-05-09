@@ -26,20 +26,32 @@ export class UsersService {
     return rest;
   }
 
-  async signup(user: CreateUserDto): Promise<User> {
+  async signup(
+    user: CreateUserDto,
+  ): Promise<Omit<User, 'password' | 'isAdmin'>> {
+    // Validación de contraseña
     if (user.password !== user.validatePassword) {
       throw new NotFoundException('Password no coincide');
     }
 
+    // Validar si el email ya existe
+    const validateEmail = await this.usersRepository.emailExists(user.email);
+
+    if (validateEmail) {
+      throw new NotFoundException('Usuario ya registrado');
+    }
+
+    // Hash de la contraseña
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
     if (!hashedPassword) {
       throw new NotFoundException('Password could not be hashed');
     }
 
-    user.password = hashedPassword;
+    const userHashedPassword = { ...user, password: hashedPassword };
 
-    const saveUser = await this.usersRepository.signup(user);
+    // Crear usuario
+    const saveUser = await this.usersRepository.signup(userHashedPassword);
 
     if (!saveUser) {
       throw new NotFoundException('Usuario no se creo correctamente');
