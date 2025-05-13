@@ -39,13 +39,17 @@ export class AuthService {
       isAdmin: [validateCredential.isAdmin === 'user' ? 'user' : 'admin'],
     };
 
-    console.log(userPayLoad);
+    try {
+      console.log(userPayLoad);
 
-    const token = this.jwtService.sign(userPayLoad);
+      const token = this.jwtService.sign(userPayLoad);
 
-    return {
-      success: 'User logged in successfully',
-      token: token,
-    };
+      return {
+        success: 'User logged in successfully',
+        token: token,
+      };
+    } catch (error) {
+      throw new NotFoundException('Token generation failed');
+    }
   }
 }

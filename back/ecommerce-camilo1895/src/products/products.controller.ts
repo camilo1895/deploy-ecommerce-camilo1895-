@@ -19,6 +19,7 @@ import { Product } from '../entities/products.entity';
 import { Roles } from '../decorators/roles.decorator';
 import { RolesGuard } from '../guards/roles.guard';
 import { Role } from 'src/auth/roles.enum';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductsController {
@@ -53,6 +54,7 @@ export class ProductsController {
     return await this.productsService.createProduct(product);
   }
 
+  @ApiBearerAuth()
   @Put(':id')
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)

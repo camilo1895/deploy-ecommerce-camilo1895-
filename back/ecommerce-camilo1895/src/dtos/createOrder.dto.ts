@@ -8,9 +8,14 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Product } from 'src/entities/products.entity';
+import { Product } from '../entities/products.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderDto {
+  @ApiProperty({
+    description: 'El identificador de usuario no puede estar vacío',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
   @IsNotEmpty({ message: 'El identificador de usuario no puede estar vacío' })
   @IsString({ message: 'El ID debe ser una cadena de texto' })
   @IsUUID('4', {
@@ -19,6 +24,10 @@ export class CreateOrderDto {
   })
   userId: string;
 
+  @ApiProperty({
+    description: 'Los productos deben ser proporcionados como un array',
+    example: [{ id: '550e8400-e29b-41d4-a716-446655440000', quantity: 2 }],
+  })
   @IsArray({ message: 'Los productos deben ser proporcionados como un array' })
   @ArrayNotEmpty({ message: 'El array de productos no puede estar vacío' })
   @ArrayMinSize(1, { message: 'Debe incluir al menos 1 producto' })

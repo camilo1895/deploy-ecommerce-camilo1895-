@@ -17,11 +17,13 @@ import { CreateUserDto } from '../dtos/createUser.dto';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../auth/roles.enum';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiBearerAuth()
   @Get()
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
