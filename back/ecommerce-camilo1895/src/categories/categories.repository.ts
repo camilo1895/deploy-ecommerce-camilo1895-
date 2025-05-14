@@ -9,6 +9,7 @@ export class CategoriesRepository {
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
   ) {}
+
   async getCategories(id: string): Promise<Category | null> {
     return await this.categoryRepository.findOne({
       where: { id },
@@ -21,7 +22,7 @@ export class CategoriesRepository {
     });
   }
 
-  async addCategories(category: string) {
+  async addCategories(category: string): Promise<Category> {
     return await this.categoryRepository.save({
       name: category,
     });

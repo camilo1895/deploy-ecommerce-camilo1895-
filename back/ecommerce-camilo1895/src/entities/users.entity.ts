@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from './orders.entity';
 
@@ -31,12 +31,7 @@ export class User {
   @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
   email: string;
 
-  @ApiProperty({
-    description: 'Contraseña hasheada del usuario',
-    example: '$2b$10$EjemploDeHashDe60Caracteres123456789012',
-    maxLength: 150,
-    required: true,
-  })
+  @ApiHideProperty()
   @Column({ type: 'varchar', length: 150, nullable: false })
   password: string;
 

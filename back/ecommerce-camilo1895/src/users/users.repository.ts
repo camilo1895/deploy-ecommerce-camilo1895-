@@ -61,9 +61,7 @@ export class UsersRepository {
     });
   }
 
-  async signup(
-    user: CreateUserDto,
-  ): Promise<Omit<User, 'password' | 'isAdmin'> | null> {
+  async signup(user: CreateUserDto): Promise<User | null> {
     const { validatePassword, ...userData } = user;
 
     const saveUser = this.userRepository.create(userData);

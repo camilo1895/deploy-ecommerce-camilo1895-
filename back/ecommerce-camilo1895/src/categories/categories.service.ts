@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoriesRepository } from './categories.repository';
 import data from '../../data.json';
+import { Category } from 'src/entities/categories.entity';
 
 @Injectable()
 export class CategoriesService {
@@ -17,7 +18,7 @@ export class CategoriesService {
     return validateCategories;
   }
 
-  async addCategories() {
+  async addCategories(): Promise<Category[]> {
     const unicos = data.filter(
       (item, index, products) =>
         index ===

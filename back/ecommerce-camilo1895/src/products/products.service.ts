@@ -16,7 +16,7 @@ export class ProductsService {
     return await this.productsRepository.getProducts(page, limit);
   }
 
-  async getProductById(id: string): Promise<Product | null> {
+  async getProductById(id: string): Promise<Product> {
     const productById = await this.productsRepository.getProductById(id);
 
     if (!productById) {
@@ -68,17 +68,23 @@ export class ProductsService {
     return this.productsRepository.createProduct(product);
   }
 
-  async updateProductById(
-    id: string,
-    product: ProductDto,
-  ): Promise<Product | null> {
+  async updateProductById(id: string, product: ProductDto): Promise<Product> {
     const validateProduct = await this.productsRepository.getProductById(id);
 
     if (!validateProduct) {
       throw new NotFoundException('Producto no existe');
     }
 
-    return await this.productsRepository.updateProductById(id, product);
+    const updateProduct = await this.productsRepository.updateProductById(
+      id,
+      product,
+    );
+
+    if (!updateProduct) {
+      throw new NotFoundException('Error al retornar producto actualizado');
+    }
+
+    return updateProduct;
   }
 
   async deleteProductById(id: string) {

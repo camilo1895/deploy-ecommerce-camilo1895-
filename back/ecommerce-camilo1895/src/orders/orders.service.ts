@@ -18,11 +18,17 @@ export class OrdersService {
     private oderDetailRepository: Repository<OrderDetails>,
   ) {}
 
-  async getOrder(id: string) {
-    return await this.ordersRepository.getOrder(id);
+  async getOrder(id: string): Promise<Order> {
+    const resultOrder = await this.ordersRepository.getOrder(id);
+
+    if (!resultOrder) {
+      throw new NotFoundException('Order no existe');
+    }
+
+    return resultOrder;
   }
 
-  async addOrder(order: CreateOrderDto): Promise<Order | null> {
+  async addOrder(order: CreateOrderDto): Promise<Order> {
     //Buscar al usuario por su id
     const validateUser = await this.usersRepository.getUserById(order.userId);
 
@@ -61,7 +67,7 @@ export class OrdersService {
         //Reduces el stock de cada producto en memoria (aún no guardas nada).
         existsProduct.stock -= 1;
 
-        await this.productRepository.updateProductById(
+        await this.productRepository.updateProductStock(
           product.id,
           existsProduct,
         );
@@ -84,6 +90,12 @@ export class OrdersService {
 
     await this.ordersRepository.updateOrder(createOrdersUser);
 
-    return await this.ordersRepository.getOrder(createOrdersUser.id);
+    const result = await this.ordersRepository.getOrder(createOrdersUser.id);
+
+    if (!result) {
+      throw new NotFoundException('Order no existe');
+    }
+
+    return result;
   }
 }

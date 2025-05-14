@@ -41,6 +41,17 @@ export class ProductsRepository {
     id: string,
     product: ProductDto,
   ): Promise<Product | null> {
+    await this.productRepository.update(id, product);
+
+    return await this.productRepository.findOne({
+      where: { id },
+    });
+  }
+
+  async updateProductStock(
+    id: string,
+    product: ProductDto,
+  ): Promise<Product | null> {
     await this.productRepository.update(id, { stock: product.stock });
 
     return await this.productRepository.findOne({

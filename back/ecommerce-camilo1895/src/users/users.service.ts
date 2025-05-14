@@ -8,27 +8,21 @@ import bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async getUsers(
-    page: number,
-    limit: number,
-  ): Promise<Omit<User, 'password'>[]> {
+  async getUsers(page: number, limit: number): Promise<User[]> {
     return this.usersRepository.getUsers(page, limit);
   }
 
-  async getUserById(id: string): Promise<Omit<User, 'password'>> {
+  async getUserById(id: string): Promise<User> {
     const user = await this.usersRepository.getUserById(id);
 
     if (!user) {
       throw new NotFoundException('Usuario no existe');
     }
-    const { password, ...rest } = user;
 
-    return rest;
+    return user;
   }
 
-  async signup(
-    user: CreateUserDto,
-  ): Promise<Omit<User, 'password' | 'isAdmin'>> {
+  async signup(user: CreateUserDto): Promise<User> {
     // Validación de contraseña
     if (user.password !== user.validatePassword) {
       throw new NotFoundException('Password no coincide');
@@ -60,14 +54,19 @@ export class UsersService {
     return saveUser;
   }
 
-  async updateUserById(id: string, user: CreateUserDto) {
+  async updateUserById(id: string, user: CreateUserDto): Promise<User> {
     const validateUser = await this.usersRepository.getUserById(id);
 
     if (!validateUser) {
       throw new NotFoundException('Usuario no existe');
     }
 
-    return await this.usersRepository.updateUserById(id, user);
+    const updateResult = await this.usersRepository.updateUserById(id, user);
+
+    if (!updateResult) {
+      throw new NotFoundException('Error al retornar usuario actualizado');
+    }
+    return updateResult;
   }
 
   async deleteUserById(id: string) {

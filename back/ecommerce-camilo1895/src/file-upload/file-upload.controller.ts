@@ -10,11 +10,19 @@ import {
 } from '@nestjs/common';
 import { FileUploadService } from './file-upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Product } from 'src/entities/products.entity';
 
+@ApiTags('File')
 @Controller('file')
 export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 
+  @ApiOperation({
+    summary: 'Sube una imagen para un producto',
+    description:
+      'Endpoint para cargar una imagen asociada a un producto específico. Formatos permitidos: JPG, JPEG, PNG, WEBP. Tamaño máximo: 200KB',
+  })
   @Post('uploadImage/:id')
   @UseInterceptors(FileInterceptor('image'))
   async uploadFile(
@@ -33,7 +41,7 @@ export class FileUploadController {
     )
     file: Express.Multer.File,
     @Param('id') idProduct: string,
-  ) {
+  ): Promise<Product> {
     return await this.fileUploadService.uploadFile(file, idProduct);
   }
 }

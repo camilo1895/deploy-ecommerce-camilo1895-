@@ -40,10 +40,6 @@ export class Product {
   @ApiProperty({
     description: 'Precio del producto en USD',
     example: 799.99,
-    type: 'number',
-    format: 'decimal',
-    minimum: 0.01,
-    maximum: 9999999.99,
   })
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   price: number;

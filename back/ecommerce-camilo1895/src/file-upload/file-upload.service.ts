@@ -11,7 +11,7 @@ export class FileUploadService {
   async uploadFile(
     file: Express.Multer.File,
     idProduct: string,
-  ): Promise<UploadApiResponse | Product> {
+  ): Promise<Product> {
     const cloudStorage: UploadApiResponse = await new Promise(
       (resolve, reject) => {
         const uploadStream = v2.uploader.upload_stream(
