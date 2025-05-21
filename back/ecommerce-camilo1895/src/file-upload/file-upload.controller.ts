@@ -11,7 +11,7 @@ import {
 import { FileUploadService } from './file-upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Product } from 'src/entities/products.entity';
+import { Product } from '../entities/products.entity';
 
 @ApiTags('File')
 @Controller('file')

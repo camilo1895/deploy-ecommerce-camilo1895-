@@ -1,0 +1,6 @@
+# Comentarios con #
+*/temp*           # Ignora archivos que empiezan con 'temp' en subdirectorios 
+**/node_modules   # Ignora todas las carpetas 'node_modules' (incluyendo subdirectorios)
+*.log             # Ignora todos los archivos con extensión .log
+.git/             # Excluye el directorio .git
+.DS_Store         # Metadatos de macOS (si se trabaja en Mac)
