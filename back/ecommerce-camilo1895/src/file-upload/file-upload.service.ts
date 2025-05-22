@@ -3,6 +3,7 @@ import { UploadApiResponse, v2 } from 'cloudinary';
 import { Product } from '../entities/products.entity';
 import { ProductsRepository } from '../products/products.repository';
 import { Readable } from 'stream'; // Método recomendado
+import { Express } from 'express';
 
 @Injectable()
 export class FileUploadService {
