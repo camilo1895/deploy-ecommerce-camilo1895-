@@ -64,7 +64,7 @@ async function bootstrap() {
     phone: '3512345678',
     country: 'Argentina',
     city: 'Córdoba',
-    isAdmin: 'admin', // este campo es opcional
+    isAdmin: 'admin', // este campo es opcional, solo para crear un rol de admin
   });
 
   await app.listen(process.env.PORT ?? 3000);
