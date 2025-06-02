@@ -1,4 +1,4 @@
-# Node.js 20 Alpine (versión ligera)
+# Node.js 20 
 FROM node:20
 
 # Directorio de trabajo en el contenedor

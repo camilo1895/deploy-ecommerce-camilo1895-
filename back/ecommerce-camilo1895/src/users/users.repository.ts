@@ -11,6 +11,8 @@ export class UsersRepository {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
+  async userAdmin(user: CreateUserDto) {}
+
   async getUsers(page: number, limit: number): Promise<User[]> {
     return await this.userRepository.find({
       select: {

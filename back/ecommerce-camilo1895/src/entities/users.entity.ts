@@ -38,10 +38,10 @@ export class User {
   @ApiProperty({
     description: 'Número de teléfono del usuario',
     example: 3512345678,
-    type: 'integer',
+    type: 'string',
   })
-  @Column({ type: 'int' })
-  phone: number;
+  @Column({ type: 'varchar', length: 10 })
+  phone: string;
 
   @ApiProperty({
     description: 'País del usuario (opcional)',

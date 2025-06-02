@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Length,
   Matches,
@@ -98,13 +99,16 @@ export class CreateUserDto {
     description: 'El teléfono debe tener al menos 7 dígitos',
     example: 3512345678,
   })
-  @IsNotEmpty({ message: 'El teléfono es obligatorio' })
-  @IsNumber({}, { message: 'El teléfono debe ser un número' })
-  @Min(1000000, { message: 'El teléfono debe tener al menos 7 dígitos' })
-  @Max(9999999999, {
-    message: 'El teléfono no puede exceder los 20 dígitos',
+  @ApiProperty({
+    description: 'El teléfono debe tener entre 7 y 10 dígitos numéricos',
+    example: '3512345678',
   })
-  phone: number;
+  @IsNotEmpty({ message: 'El teléfono es obligatorio' })
+  @IsString({ message: 'El teléfono debe ser texto' })
+  @Matches(/^\d{7,10}$/, {
+    message: 'El teléfono debe tener entre 7 y 10 dígitos numéricos',
+  })
+  phone: string;
 
   @ApiProperty({
     description: 'El país debe tener entre 5 y 20 caracteres',
@@ -123,4 +127,8 @@ export class CreateUserDto {
   @IsString({ message: 'La ciudad debe ser texto' })
   @Length(5, 20, { message: 'La ciudad debe tener entre 5 y 20 caracteres' })
   city: string;
+
+  @IsOptional({ message: 'El rol no es obligatorio' })
+  @IsString({ message: 'El rol debe ser un texto' })
+  isAdmin?: string;
 }

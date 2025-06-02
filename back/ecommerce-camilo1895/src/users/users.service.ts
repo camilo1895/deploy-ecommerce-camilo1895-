@@ -8,6 +8,14 @@ import bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
+  async userAdmin(user: CreateUserDto) {
+    const validateUser = await this.usersRepository.getUsers(1, 5);
+
+    if (validateUser.length === 0) {
+      await this.usersRepository.signup(user);
+    }
+  }
+
   async getUsers(page: number, limit: number): Promise<User[]> {
     return this.usersRepository.getUsers(page, limit);
   }
