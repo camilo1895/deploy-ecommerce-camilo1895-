@@ -23,6 +23,13 @@ export class RolesGuard implements CanActivate {
 
     const user = request.user;
 
+    console.log('Validacion de la informacion requireRoles', requireRoles);
+
+    console.log(
+      'Validacion de la informacion que llega al guard de roles',
+      user,
+    );
+
     const hasRole = () =>
       requireRoles.some((role) => user?.isAdmin?.includes(role));
 
@@ -30,7 +37,7 @@ export class RolesGuard implements CanActivate {
 
     if (!valid) {
       throw new ForbiddenException(
-        'You do not have permission and aaere not allowed to acces this route',
+        'No tienes permiso y no estás autorizado para acceder a esta ruta',
       );
     }
 

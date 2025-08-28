@@ -9,9 +9,10 @@ import {
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from '../dtos/createOrder.dto';
 import { Order } from '../entities/orders.entity';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Orders')
+@ApiBearerAuth() // Indica que el endpoint requiere autenticación JWT
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
@@ -22,6 +23,7 @@ export class OrdersController {
   })
   @Post()
   async addOrder(@Body() order: CreateOrderDto): Promise<Order> {
+    console.log('LO que llega', order);
     return await this.ordersService.addOrder(order);
   }
 

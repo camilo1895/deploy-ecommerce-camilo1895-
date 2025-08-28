@@ -29,9 +29,9 @@ export class UsersController {
     description:
       'Obtiene una lista paginada de todos los usuarios existentes. Solo disponible para administradores.',
   })
-  @ApiBearerAuth()
+  @ApiBearerAuth() // Indica que el endpoint requiere autenticación JWT
   @Get()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin) // Valida que solo un usuario con rol de ADMIN pueda realizar esta solicitud
   @UseGuards(AuthGuard, RolesGuard)
   async getUsers(
     @Query('page') page: number = 1,
@@ -47,6 +47,7 @@ export class UsersController {
     description:
       'Devuelve los detalles de un usuario específico basado en su ID UUID',
   })
+  @ApiBearerAuth() // Indica que el endpoint requiere autenticación JWT
   @Get(':id')
   @UseGuards(AuthGuard)
   async getUserById(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
@@ -58,6 +59,7 @@ export class UsersController {
     description:
       'Permite actualizar la información de un usuario existente identificado por su UUID',
   })
+  @ApiBearerAuth() // Indica que el endpoint requiere autenticación JWT
   @Put(':id')
   @UseGuards(AuthGuard)
   async updateUserById(
@@ -72,6 +74,7 @@ export class UsersController {
     description:
       'Elimina permanentemente un usuario específico del sistema basado en su ID UUID',
   })
+  @ApiBearerAuth() // Indica que el endpoint requiere autenticación JWT
   @Delete(':id')
   @UseGuards(AuthGuard)
   async deleteUserById(@Param('id', ParseUUIDPipe) id: string) {

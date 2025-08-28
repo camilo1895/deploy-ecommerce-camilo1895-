@@ -83,7 +83,7 @@ export class OrdersService {
     const createOrderDetails = {
       price: totalPrice,
       order: createOrdersUser,
-      product: filterValidateProduct,
+      products: filterValidateProduct,
     };
 
     await this.oderDetailRepository.save(createOrderDetails);

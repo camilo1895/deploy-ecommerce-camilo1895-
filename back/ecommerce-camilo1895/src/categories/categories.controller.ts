@@ -1,6 +1,6 @@
 import { Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Category } from 'src/entities/categories.entity';
 
 @ApiTags('Categories')
@@ -18,11 +18,7 @@ export class CategoriesController {
     return await this.categoriesService.getCategories(id);
   }
 
-  @ApiOperation({
-    summary: 'Ejecuta seeder de categorías',
-    description:
-      'Endpoint administrativo para poblar la base de datos con categorías iniciales. SE USA SOLO EN DESARROLLO',
-  })
+  @ApiExcludeEndpoint() // Esta ruta no aparece en Swagger, precarga de categorias
   @Post('seeder')
   async addCategories(): Promise<Category[]> {
     return await this.categoriesService.addCategories();

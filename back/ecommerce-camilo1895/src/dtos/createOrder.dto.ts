@@ -8,8 +8,8 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Product } from '../entities/products.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { OrderProductDto } from './orderProduct.dto';
 
 export class CreateOrderDto {
   @ApiProperty({
@@ -26,12 +26,15 @@ export class CreateOrderDto {
 
   @ApiProperty({
     description: 'Los productos deben ser proporcionados como un array',
-    example: [{ id: '550e8400-e29b-41d4-a716-446655440000', quantity: 2 }],
+    example: [
+      { id: '550e8400-e29b-41d4-a716-446655440000' },
+      { id: '550e8400-e29b-41d4-a716-446655440001' },
+    ],
   })
   @IsArray({ message: 'Los productos deben ser proporcionados como un array' })
   @ArrayNotEmpty({ message: 'El array de productos no puede estar vacío' })
   @ArrayMinSize(1, { message: 'Debe incluir al menos 1 producto' })
   @ValidateNested({ each: true })
-  @Type(() => Product)
-  products: Partial<Product>[];
+  @Type(() => OrderProductDto)
+  products: OrderProductDto[];
 }

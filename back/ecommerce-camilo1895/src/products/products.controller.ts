@@ -19,7 +19,12 @@ import { Product } from '../entities/products.entity';
 import { Roles } from '../decorators/roles.decorator';
 import { RolesGuard } from '../guards/roles.guard';
 import { Role } from 'src/auth/roles.enum';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Products')
 @Controller('products')
@@ -53,11 +58,7 @@ export class ProductsController {
     return await this.productsService.getProductById(id);
   }
 
-  @ApiOperation({
-    summary: 'Precarga datos de productos (Seeder)',
-    description:
-      'Endpoint para cargar datos iniciales de productos. SOLO DISPONIBLE EN DESARROLLO',
-  })
+  @ApiExcludeEndpoint() // Esta ruta no aparece en Swagger, precarga de productos
   @Post('seeder')
   async precargaProducts(): Promise<Product[]> {
     return await this.productsService.precargaProducts();
@@ -67,6 +68,7 @@ export class ProductsController {
     summary: 'Crea un nuevo producto',
     description: 'Crea un nuevo producto en el catálogo.',
   })
+  @ApiBearerAuth() // Indica que el endpoint requiere autenticación JWT
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
@@ -79,7 +81,7 @@ export class ProductsController {
     description:
       'Actualiza los datos de un producto existente. Requiere autenticación y permisos de admi',
   })
-  @ApiBearerAuth()
+  @ApiBearerAuth() // Indica que el endpoint requiere autenticación JWT
   @Put(':id')
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
@@ -96,6 +98,7 @@ export class ProductsController {
     summary: 'Elimina un producto por ID',
     description: 'Elimina permanentemente un producto del sistema.',
   })
+  @ApiBearerAuth() // Indica que el endpoint requiere autenticación JWT
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)

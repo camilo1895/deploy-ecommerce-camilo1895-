@@ -12,7 +12,7 @@ export class OrdersRepository {
   async getOrder(id: string): Promise<Order | null> {
     return await this.orderRepository.findOne({
       where: { id },
-      relations: ['user', 'orderDetails', 'orderDetails.product'],
+      relations: ['user', 'orderDetails', 'orderDetails.products'],
     });
   }
 

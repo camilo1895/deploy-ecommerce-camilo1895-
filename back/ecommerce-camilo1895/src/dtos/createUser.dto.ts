@@ -1,14 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Length,
   Matches,
-  Max,
-  Min,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -128,6 +125,7 @@ export class CreateUserDto {
   @Length(5, 20, { message: 'La ciudad debe tener entre 5 y 20 caracteres' })
   city: string;
 
+  @ApiHideProperty() // ← Oculta esta propiedad en Swagger
   @IsOptional({ message: 'El rol no es obligatorio' })
   @IsString({ message: 'El rol debe ser un texto' })
   isAdmin?: string;

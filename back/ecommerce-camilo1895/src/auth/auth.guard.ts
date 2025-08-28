@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
 
       request.user = payload;
 
-      console.log(payload);
+      console.log('Validacion de cuando verifica token ', payload);
 
       return true;
     } catch (error) {

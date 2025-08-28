@@ -12,7 +12,15 @@ export class UsersService {
     const validateUser = await this.usersRepository.getUsers(1, 5);
 
     if (validateUser.length === 0) {
-      await this.usersRepository.signup(user);
+      // Hash de la contraseña
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+
+      if (!hashedPassword) {
+        throw new NotFoundException('Password could not be hashed');
+      }
+
+      const userHashedPassword = { ...user, password: hashedPassword };
+      await this.usersRepository.signup(userHashedPassword);
     }
   }
 
